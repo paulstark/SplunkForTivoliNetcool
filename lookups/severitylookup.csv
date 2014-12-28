@@ -1,0 +1,7 @@
+Severity,SeverityText
+0,Clear
+1,Indeterminate
+2,Warning
+3,Minor
+4,Major
+5,Critical

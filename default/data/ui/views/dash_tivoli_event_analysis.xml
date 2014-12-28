@@ -1,0 +1,150 @@
+<dashboard script="autodiscover.js"> 
+  <label>Tivoli Netcool Event Analysis (24 Hour)</label>
+    <label>D3 Parallel Coordinates</label>
+    <row>
+        <html>
+            <h2>Fault Structure</h2>
+            <div id="custom_search"
+                 class="splunk-manager"
+                 data-require="splunkjs/mvc/searchmanager"
+                 data-options='{
+                        "search": "index=tivoli_fault |dedup Node, AlertGroup |table Node AlertGroup EventId",
+                        "earliest_time": "-24h"
+                    }'>
+            </div>
+            <div id="custom"
+                 class="splunk-view"
+                 data-require="app/SplunkForTivoliNetcool/components/parallelcoords/parallelcoords"
+                 data-options='{
+                        "managerid": "custom_search",
+                        "height": 400
+                    }'>
+            </div>
+        </html>
+    </row>
+    <label>D3 Bubble Chart</label>
+    <row>
+        <html>
+            <h2>EventId Bubbles</h2>
+
+            <div id="bubbleSearch"
+                 class="splunk-manager"
+                 data-require="splunkjs/mvc/searchmanager"
+                 data-options='{
+                    "search": "index=tivoli_fault | stats count by EventId",
+                    "earliest_time": "-24h",
+                    "status_buckets": 0,
+                    "cancelOnUnload": true,
+                    "auto_cancel": 90,
+                    "preview": true
+                 }'>
+            </div>
+
+            <div id="bubbleChart"
+                 class="splunk-view"
+                 data-require="app/SplunkForTivoliNetcool/components/bubblechart/bubblechart"
+                 data-options='{
+                    "managerid": "bubbleSearch",
+                    "nameField": "EventId",
+                    "categoryField": "EventId",
+                    "valueField": "count",
+                    "height": 250
+                 }'>
+            </div>
+        </html>
+        <html>
+            <h2>AlertGroup Bubbles</h2>
+
+            <div id="bubbleSearch2"
+                 class="splunk-manager"
+                 data-require="splunkjs/mvc/searchmanager"
+                 data-options='{
+                    "search": "index=tivoli_fault | stats count by AlertGroup",
+                    "earliest_time": "-24h",
+                    "status_buckets": 0,
+                    "cancelOnUnload": true,
+                    "auto_cancel": 90,
+                    "preview": true
+                 }'>
+            </div>
+
+            <div id="bubbleChart2"
+                 class="splunk-view"
+                 data-require="app/SplunkForTivoliNetcool/components/bubblechart/bubblechart"
+                 data-options='{
+                    "managerid": "bubbleSearch2",
+                    "nameField": "AlertGroup",
+                    "categoryField": "AlertGroup",
+                    "valueField": "count",
+                    "height": 250
+                 }'>
+            </div>
+        </html>
+    </row>
+  <row>
+    <panel>
+      <chart>
+        <title>Severity Distribution Over Time</title>
+        <searchName>TIV - Severity Count Over Time</searchName>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+    <panel>
+      <chart>
+        <title>Event Volume Prediction</title>
+        <searchName>TIV - Event Volume Predictions</searchName>
+        <option name="charting.axisLabelsX.majorLabelStyle.overflowMode">ellipsisNone</option>
+        <option name="charting.axisLabelsX.majorLabelStyle.rotation">0</option>
+        <option name="charting.axisTitleX.visibility">visible</option>
+        <option name="charting.axisTitleY.visibility">visible</option>
+        <option name="charting.axisTitleY2.visibility">visible</option>
+        <option name="charting.axisX.scale">linear</option>
+        <option name="charting.axisY.scale">linear</option>
+        <option name="charting.axisY2.enabled">0</option>
+        <option name="charting.axisY2.scale">inherit</option>
+        <option name="charting.chart">line</option>
+        <option name="charting.chart.nullValueMode">gaps</option>
+        <option name="charting.chart.sliceCollapsingThreshold">0.01</option>
+        <option name="charting.chart.stackMode">default</option>
+        <option name="charting.chart.style">shiny</option>
+        <option name="charting.drilldown">all</option>
+        <option name="charting.layout.splitSeries">0</option>
+        <option name="charting.legend.labelStyle.overflowMode">ellipsisMiddle</option>
+        <option name="charting.legend.placement">right</option>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Most Common EventId By Node</title>
+        <searchName>TIV - Most Common Event by Node</searchName>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <title>Top 10 Event Summaries</title>
+        <searchName>TIV - Top 10 Event Summaries</searchName>
+      </table>
+    </panel>
+  </row>
+</dashboard>

@@ -1,0 +1,10 @@
+<nav search_view="search" color="#293E6A">
+  <collection label="Dashboards">
+      <view source="unclassified" match="dash"/>
+  </collection>
+  
+  <view name="reports"  />
+  <view name="search" default='true' />
+  <view name="data_models" />
+  <view name="alerts" />
+</nav>

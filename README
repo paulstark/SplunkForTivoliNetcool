@@ -1,0 +1,118 @@
+The Splunk App for IBM Tivoli Netcool (v1.0) has been created with two purposes in mind; monitor the application and monitor the contents of the application.
+
+The App was built using Splunk 6.2 and Netcool 7.4 both running on *NIX platform.
+
+Installation steps for a distributed deployment are as follows:
+(for single server Splunk architectures perform steps 1,2, & 4)
+
+1. Download.
+
+2. On the Search head:
+   A. Install via the Splunk GUI.
+   B. Copy $SPLUNK_HOME/etc/apps/SplunkForTivoliNetcool/addons/TA* files to the $SPLUNK_HOME/etc/apps/ directory and uncompress.
+   C. Restart splunkd on the Search Head.
+
+3. Distribute the tech add-ons to your Indexers (as prescribed in step 2B) and restart splunkd.
+
+4. Universal Forwarder:
+   A. Install a universal forwarder on the Netcool Object Server.
+   B. Distributed the tech add-ons as prescribed in step 2B.
+   C. Restart plunked on the universal forwarder.
+
+TA-tivoli_netcool_omnibus: is set to monitor the application logfiles contained in the /opt/IBM/tivoli/netcool/log/ & /opt/IBM/tivoli/netcool/omnibus/log/ directories.
+ 
+TA-tivoli_netcool_object_server: requires the configuration of a Netcool flat file gateway. Splunk will automatically parse key value pairs when the schema of alerts.staus changes.
+
+example contents of gateway config files
+
+<GatewayName>.map
+###	 CREATE MAPPING StatusMap
+###	 (
+###		'Identifier' = '@Identifier',
+###		'Serial' = '@Serial',
+###		'Node' = '@Node',
+###		'NodeAlias' = '@NodeAlias',
+###		'Manager' = '@Manager',
+###		'Agent' = '@Agent',
+###		'AlertGroup' = '@AlertGroup',
+###		'AlertKey' = '@AlertKey',
+###		'Severity' = '@Severity',
+###		'Summary' = '@Summary',
+###		'StateChange' = '@StateChange' CONVERT TO DATE,
+###		'FirstOccurrence' = '@FirstOccurrence' CONVERT TO DATE,
+###		'LastOccurrence' = '@LastOccurrence' CONVERT TO DATE,
+###		'InternalLast' = '@InternalLast' CONVERT TO DATE,
+###		'Poll' = '@Poll',
+###		'Type' = '@Type',
+###		'Tally' = '@Tally',
+###		'Class' = '@Class',
+###		'Grade' = '@Grade',
+###		'Location' = '@Location',
+###		'OwnerUID' = '@OwnerUID',
+###		'OwnerGID' = '@OwnerGID',
+###		'Acknowledged' = '@Acknowledged',
+###		'Flash' = '@Flash',
+###		'EventId' = '@EventId',
+###		'ExpireTime' = '@ExpireTime',
+###		'ProcessReq' = '@ProcessReq',
+###		'SuppressEscl' = '@SuppressEscl',
+###		'Customer' = '@Customer',
+###		'Service' = '@Service',
+###		'PhysicalSlot' = '@PhysicalSlot',
+###		'PhysicalPort' = '@PhysicalPort',
+###		'PhysicalCard' = '@PhysicalCard',
+###		'TaskList' = '@TaskList',
+###		'NmosSerial' = '@NmosSerial',
+###		'NmosObjInst' = '@NmosObjInst',
+###		'NmosCauseType' = '@NmosCauseType',
+###		'LocalNodeAlias' = '@LocalNodeAlias',
+###		'LocalPriObj' = '@LocalPriObj',
+###		'LocalSecObj' = '@LocalSecObj',
+###		'LocalRootObj' = '@LocalRootObj',
+###		'RemoteNodeAlias' = '@RemoteNodeAlias',
+###		'RemotePriObj' = '@RemotePriObj',
+###		'RemoteSecObj' = '@RemoteSecObj',
+###		'RemoteRootObj' = '@RemoteRootObj',
+###		'X733EventType' = '@X733EventType',
+###		'X733ProbableCause' = '@X733ProbableCause',
+###		'X733SpecificProb' = '@X733SpecificProb',
+###		'X733CorrNotif' = '@X733CorrNotif',
+###		'ServerName' = '@ServerName',
+###		'ServerSerial' = '@ServerSerial',
+###		'URL' = '@URL'
+###	);
+
+<GatewayName>.props
+###	MaxLogFileSize                        : 1024
+###	MessageLevel                          : 'warn'
+###	MessageLog                            : '/opt/IBM/tivoli/netcool/omnibus/log/FF_GATE.log'
+###	Name                                  : 'FF_GATE'
+###	PropsFile                             : '/opt/IBM/tivoli/netcool/omnibus/etc/FILE.props'
+###	Gate.Reader.Username                  : 'root'
+###	Gate.Reader.Password                  : ''
+###	Gate.MapFile                          : '/opt/IBM/tivoli/netcool/omnibus/etc/FILE.map'
+###	Gate.StartupCmdFile                   : '/opt/IBM/tivoli/netcool/omnibus/etc/FILE.startup.cmd'
+###	Gate.Reader.Server                    : 'NCOMS'
+###	Gate.Reader.StatusTableName           : 'alerts.status'
+###	Gate.Reader.TblReplicateDefFile       : '/opt/IBM/tivoli/netcool/omnibus/etc/FILE.reader.tblrep.def'
+###	Gate.File.FileName                    : '/opt/IBM/tivoli/netcool/omnibus/var/file_output.log'
+###	Gate.File.InsertTrailer               : '\n'
+###	Gate.File.ColSeparator                : '='
+###	Gate.File.Separator                   : '!'
+###	Gate.File.MaxFileSize                 : 102400
+###	Gate.File.OutputFieldNames            : TRUE
+###	Gate.File.Sync                        : TRUE
+###	Gate.File.OutputMode                  : 'CURRENT'
+###	Gate.File.DeleteHeader                : 'DELETE: '
+###	Gate.File.DeleteTrailer               : '\n'
+###	Gate.File.InsertHeader                : 'INSERT: '
+###	Gate.File.InsertTrailer               : '\n'
+###	Gate.File.UpdateHeader                : 'UPDATE: '
+###	Gate.File.UpdateTrailer               : '\n'
+
+<GatewayName>.reader.tblrep.def
+###	 REPLICATE ALL FROM TABLE 'alerts.status'
+###			USING MAP 'StatusMap';
+
+<GatewayName>.startup.cmd
+ 	<no file contents>
