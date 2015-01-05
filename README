@@ -1,6 +1,10 @@
-The Splunk App for IBM Tivoli Netcool (v1.0) has been created with two purposes in mind; monitor the application and monitor the contents of the application.
+Author: Paul Stark
+Version: 1.0
+Date: 1/5/15
 
-The App was built using Splunk 6.2 and Netcool 7.4 both running on *NIX platform.
+Description: The Splunk App for IBM Tivoli Netcool has been created with two purposes in mind; monitor the application and monitor the contents of the application.
+
+Supported Products: The App was built using Splunk 6.2 and Netcool 7.4 both running on *NIX platform.
 
 Installation steps for a distributed deployment are as follows:
 (for single server Splunk architectures perform steps 1,2, & 4)
@@ -17,11 +21,13 @@ Installation steps for a distributed deployment are as follows:
 4. Universal Forwarder:
    A. Install a universal forwarder on the Netcool Object Server.
    B. Distributed the tech add-ons as prescribed in step 2B.
-   C. Restart plunked on the universal forwarder.
+   C. Restart splunkd on the universal forwarder.
 
-TA-tivoli_netcool_omnibus: is set to monitor the application logfiles contained in the /opt/IBM/tivoli/netcool/log/ & /opt/IBM/tivoli/netcool/omnibus/log/ directories.
+Input Requirements: As mentioned, inputs are defined for *NIX based installations, probable windows inputs exist in the comment section of the inputs.conf file.
+
+TA-tivoli_netcool_omnibus: is set to monitor the application log files contained in the /opt/IBM/tivoli/netcool/log/ & /opt/IBM/tivoli/netcool/omnibus/log/ directories. Default sourcetype is set to ‘app_log’ and modified via transform to reflect the file name preceding the .log extension. Index is set to ‘tivoli_app_log’. 
  
-TA-tivoli_netcool_object_server: requires the configuration of a Netcool flat file gateway. Splunk will automatically parse key value pairs when the schema of alerts.staus changes.
+TA-tivoli_netcool_object_server: requires the configuration of a Netcool flat file gateway. Splunk will automatically parse key value pairs when the schema of alerts.staus changes. Sourcetype is set to ‘event’ and index is set to ‘tivoli_fault’.
 
 example contents of gateway config files
 
